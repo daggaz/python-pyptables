@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='PyPTables',
-    version='1.0.1',
+    version='1.0.3',
     author='Jamie Cockburn',
     author_email='jamie_cockburn@hotmail.co.uk',
     packages=['pyptables',
@@ -12,7 +12,7 @@ setup(
               'pyptables.rules.forwarding',
               ],
     scripts=[],
-    url='http://pypi.python.org/pypi/PyPTables/',
+    url='https://github.com/daggaz/python-pyptables',
     license='LICENSE.txt',
     description='Python package for generating Linux iptables configurations.',
     long_description=open('README.rst').read(),
