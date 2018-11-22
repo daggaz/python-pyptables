@@ -7,6 +7,7 @@ from pyptables.base import DebugObject
 from pyptables.rules.arguments import ArgumentList
 from pyptables.rules.matches import Match
 
+
 class Zone(DebugObject):
     """Represents a network"""
     
@@ -38,7 +39,7 @@ class Zone(DebugObject):
         return ArgumentList(out_interface=self.interface, args=[Match('physdev', physdev_out=self.physdev)])
 
     def __repr__(self):
-        return "<Zone: %s>" % (self.name)
+        return "<Zone: %s>" % (self.name,)
     
     def __str__(self):
         return self.name

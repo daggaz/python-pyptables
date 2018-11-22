@@ -6,6 +6,7 @@
 from pyptables.base import DebugObject
 from pyptables.rules.matches import Match
 
+
 class IPSet(DebugObject):
     """Represents a linux ipset"""
     
@@ -30,7 +31,7 @@ class IPSet(DebugObject):
         return Match('set', match_set=[self.name, 'dst'])
 
     def __repr__(self):
-        return "<IPSet: %s>" % (self.name)
+        return "<IPSet: %s>" % (self.name,)
     
     def __str__(self):
         return self.name

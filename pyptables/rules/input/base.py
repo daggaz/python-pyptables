@@ -1,11 +1,12 @@
 from pyptables.rules import Accept, Drop, AbstractRule, Rule, Reject
 
+
 class InputRule(AbstractRule):
     """This class represents an iptables rule for forwarding
     packets from one location to another.
     """
     
-    def __init__(self, policy, sources=[], channels=[], log=False, log_id=None, log_cls=None, comment=None):
+    def __init__(self, policy, sources=(), channels=(), log=False, log_id=None, log_cls=None, comment=None):
         """Creates a ForwardingRule
            
         policy       - the action to take (ACCEPT, DROP, REJECT, etc.) on matching the rule
@@ -62,11 +63,13 @@ class InputRule(AbstractRule):
         result = []
         for rule in rules:
             for source in self.sources:
-                result.append(rule(args=(source.as_input(),),
-                                   comment="%s: route %s -> any" % (rule.comment,
-                                                                    source,
-                                                                    ),
-                                   ))
+                result.append(rule(
+                    args=(source.as_input(),),
+                    comment="%s: route %s -> any" % (
+                        rule.comment,
+                        source,
+                    ),
+                ))
         return result
     
     def _add_channels(self, rules):
@@ -75,8 +78,8 @@ class InputRule(AbstractRule):
         result = []
         for rule in rules:
             for channel in self.channels:
-                result.append(rule(args=[channel],
-                                   comment="%s, channel %s" % (rule.comment, channel),
-                                   ))
+                result.append(rule(
+                    args=[channel],
+                    comment="%s, channel %s" % (rule.comment, channel),
+                ))
         return result
-

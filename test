@@ -2,4 +2,13 @@
 
 import subprocess
 
-subprocess.call(['nosetests', '--nocapture', '--with-coverage', '--cover-package', 'pyptables', '--cover-inclusive', '--cover-html', '--cover-erase'])
+subprocess.call([
+    'nosetests',
+    '--nocapture',
+    '--with-coverage',
+    '--cover-package',
+    'pyptables',
+    '--cover-inclusive',
+    '--cover-html',
+    '--cover-erase',
+])

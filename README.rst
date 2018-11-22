@@ -47,7 +47,7 @@ The following code will create a simple set of rules for a stateful firewall all
     # any packet not matching a rules will be dropped
     forward.policy = Rule.DROP
 
-Rules in this case are added to the iptables ``fitler`` table (for packet filtering), in the ``FORWARD`` chain (for routed or bridged packets, going to and from external sources).
+Rules in this case are added to the iptables ``filter`` table (for packet filtering), in the ``FORWARD`` chain (for routed or bridged packets, going to and from external sources).
 
 You can write the resulting rules into the kernel with the restore function:
 

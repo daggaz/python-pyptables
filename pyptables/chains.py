@@ -8,7 +8,7 @@ class AbstractChain(DebugObject, list):
     """Represents an iptables Chain.  Holds a number of Rule objects in a list-like fashion"""
     Result = namedtuple('ChainResult', 'header_content rules')
     
-    def __init__(self, name, comment=None, rules=[]):
+    def __init__(self, name, comment=None, rules=()):
         super(AbstractChain, self).__init__(rules)
         self.comment = comment
         self.name = name
@@ -16,7 +16,7 @@ class AbstractChain(DebugObject, list):
     def to_iptables(self):
         """Returns this chain in a format compatible with iptables-restore"""
         try:
-            prefix = '-A %s' % (self.name)
+            prefix = '-A %s' % (self.name,)
             if self:
                 rule_output = [rule.to_iptables(prefix=prefix) for rule in self]
                 rule_output = "\n".join(rule_output)
@@ -38,7 +38,7 @@ class AbstractChain(DebugObject, list):
         the chain (note: rules are added separately)
         """
          
-        raise NotImplemented('Subclasses must define this method') # pragma: no cover
+        raise NotImplemented('Subclasses must define this method')  # pragma: no cover
 
     def _comment(self):
         comment = '# %(type)s "%(name)s" (%(debug)s)"' % {
@@ -54,16 +54,17 @@ class AbstractChain(DebugObject, list):
         return " ".join(re.findall(r'[A-Z][^A-Z]*', self.__class__.__name__))
     
     def __repr__(self):
-        truncated = map(str, self[:3]) + (['...'] if len(self) > 3 else [])
+        truncated = [str(i) for i in self[:3]] + (['...'] if len(self) > 3 else [])
         return "<%s: %s - [%s]>" % (self.__class__.__name__, self.name, ", ".join(truncated))
-    
+
+
 class UserChain(AbstractChain):
     def __init__(self, *args, **kwargs):
         super(UserChain, self).__init__(*args, **kwargs)
         
     def _chain_definition(self):
-        return ':%(name)s - [0:0]'  % {'name': self.name}
-    
+        return ':%(name)s - [0:0]' % {'name': self.name}
+
 
 class BuiltinChain(AbstractChain):
     """Represents a built-in iptables chain
@@ -74,4 +75,4 @@ class BuiltinChain(AbstractChain):
         self.policy = policy
     
     def _chain_definition(self):
-        return ':%(name)s %(policy)s [0:0]'  % {'name': self.name, 'policy': self.policy}
+        return ':%(name)s %(policy)s [0:0]' % {'name': self.name, 'policy': self.policy}

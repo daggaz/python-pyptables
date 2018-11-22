@@ -19,6 +19,7 @@ from pyptables.rules.forwarding.locations import Location
 from pyptables.rules.forwarding.zones import Zone
 from pyptables.rules.forwarding.channels import TCPChannel, UDPChannel, ICMPChannel
 
+
 def compare(a, b):
     for line_no, lines in enumerate(zip_longest(a, b, fillvalue='')):
         lines = [line.strip() for line in lines]
@@ -26,9 +27,13 @@ def compare(a, b):
             continue
         for i, chars in enumerate(zip_longest(*lines)):
             if chars[0] != chars[1]:
-                raise ValueError("line %s doesn't match:\n\t%s\n\t%s\n\t%s^" % (line_no, lines[0], lines[1], i*'_'))
+                raise ValueError("line %s doesn't match:\n\t%s\n\t%s\n\t%s^" % (
+                    line_no,
+                    lines[0],
+                    lines[1], i*'_',
+                ))  # pragma: nocover
     return True
-        
+
 
 class MainTest(unittest.TestCase):
     def test(self):

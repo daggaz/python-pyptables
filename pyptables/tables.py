@@ -23,7 +23,10 @@ class Tables(DebugObject, OrderedDict):
         except Exception as e:  # pragma: no cover
             e.iptables_path = getattr(e, 'iptables_path', [])
             e.iptables_path.insert(0, "Tables")
-            e.message = "Iptables error at:\n    %s\n\nError message: %s" % ("\n".join(e.iptables_path).replace('\n', '\n    '), e.message)
+            e.message = "Iptables error at:\n    %s\n\nError message: %s" % (
+                "\n".join(e.iptables_path).replace('\n', '\n    '),
+                e.message,
+            )
             raise
     
     def __setitem__(self, *args, **kwargs):
@@ -36,6 +39,7 @@ class Tables(DebugObject, OrderedDict):
     
     def __repr__(self):
         return "<Tables: [%s]>" % ", ".join(['<Table: %s ...>' % t.name for t in self.values()])
+
 
 class Table(DebugObject, OrderedDict):
     """Represents an iptables table, holds a number of Chain objects in a dictionary-like fashion"""  

@@ -29,10 +29,12 @@ def default_tables():
                         ),
                   )
 
+
 def make_colorizer(code):
         def colorizer(string):
             return '\x1b[%(code)sm%(string)s\x1b[0m' % {'code': code, 'string': string}
         return colorizer
+
 
 def colorize(string):
     """Util function to format iptables output for a tty"""
@@ -42,7 +44,7 @@ def colorize(string):
     bold = make_colorizer("33")
     table = make_colorizer("1;36")
     chain = make_colorizer("36")
-    exclaimation = make_colorizer("1;31")
+    exclamation = make_colorizer("1;31")
     commit = make_colorizer("36")
     
     result = []
@@ -62,13 +64,14 @@ def colorize(string):
             parts = []
             for part in line.split():
                 if part == '!':
-                    parts.append(exclaimation(part))
+                    parts.append(exclamation(part))
                 elif part.startswith('-'):
                     parts.append(bold(part))
                 else:
                     parts.append(part)
             result.append(" ".join(parts))
     return "\n".join(result)
+
 
 strip_ANSI_escape_sequences_sub = re.compile(r"""
     \x1b     # literal ESC
@@ -77,8 +80,10 @@ strip_ANSI_escape_sequences_sub = re.compile(r"""
     [A-Za-z] # a letter
     """, re.VERBOSE).sub
 
+
 def uncolorize(string):
     return strip_ANSI_escape_sequences_sub("", string)
+
 
 def add_line_numbers(string, start=1):
     """Util function to add line numbers to a string"""
@@ -86,8 +91,14 @@ def add_line_numbers(string, start=1):
     lines = string.split('\n')
     return "\n".join([("%0" + str(len(str(len(lines)))) + "s | %s") % i for i in enumerate(lines, start)])
 
+
 def restore(tables):
-    process = subprocess.Popen(["iptables-restore"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        ["iptables-restore"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
     if hasattr(tables, 'to_iptables'):
         tables = tables.to_iptables()
     return process.communicate(tables)

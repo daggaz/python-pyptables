@@ -1,9 +1,10 @@
 import inspect
 
+
 class DebugObject(object):
     """Base class for most iptables classes.
     Allows objects to determine the source line they were created from,
-    which is used to insert debugging infomation into the generated output
+    which is used to insert debugging information into the generated output
     """
     def __init__(self, *args, **kwargs):
         super(DebugObject, self).__init__(*args, **kwargs)

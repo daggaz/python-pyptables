@@ -5,7 +5,7 @@ from random import Random
 
 from pyptables.rules import Rule
 
-_marks = []
+
 class Mark(Rule):
     """A Rule that marks matching packets with the specified mark value"""
     MARK = 'MARK'
@@ -17,6 +17,7 @@ class Mark(Rule):
         """
         super(Mark, self).__init__(jump=Mark.MARK, set_mark=str(mark), *args, **kwargs)
         self.mark = mark
+
 
 class Marked(Rule):
     """A rule that matches packets with the specified mark"""
@@ -33,13 +34,17 @@ class Marked(Rule):
         super(Marked, self).__init__(match='mark', mark=str(mark), *args, **kwargs)
         self.mark = mark
 
+
 DropMarked = partial(Marked, jump=Rule.DROP)
 AcceptMarked = partial(Marked, jump=Rule.ACCEPT)
 
 _random_mark_value = partial(Random().randint, 1, 65535)
+_marks = []
+
+
 def random_mark():
     """Generate a Mark rule with a random value""" 
     mark = _random_mark_value()
     while mark in _marks:
-        mark = _random_mark_value() # pragma: no cover
+        mark = _random_mark_value()  # pragma: no cover
     return Mark(mark=mark)

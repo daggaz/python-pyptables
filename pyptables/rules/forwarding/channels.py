@@ -6,21 +6,23 @@
 from pyptables.rules.arguments import ArgumentList, UnboundArgument
 from pyptables.rules.matches import Match
 
+
 class Channel(ArgumentList):
     """Channels represent a L3 network protocol"""
     
-    def __init__(self, known_args=[], **kwargs):
+    def __init__(self, known_args=(), **kwargs):
         """Creates a Channel.
         
         p, proto - L3 protocol name (tcp, udp, etc.)
         kwargs   - Additional iptables arguments (see ArgumentList)
         """
-        known_args += [UnboundArgument('p', 'proto')]
+        known_args += (UnboundArgument('p', 'proto'),)
         super(Channel, self).__init__(known_args=known_args, **kwargs)
     
     def __str__(self):
         return "%s" % self['p'].value
-    
+
+
 class StatefulChannel(Channel):
     """A Channel capable of tracking connection state"""
     
@@ -40,7 +42,8 @@ class StatefulChannel(Channel):
         if 'ctstate' in self:
             return "%s, %s" % (base_str, self['ctstate'].value)
         return base_str
-    
+
+
 class PortChannel(StatefulChannel):
     """A StatefulChannel with port information. May only be used with "proto" that supports ports."""
     
@@ -67,11 +70,13 @@ class PortChannel(StatefulChannel):
         dports = self['dports'].value if 'dports' in self else 'any'
         return "%s, ports %s -> %s" % (super(PortChannel, self).__str__(), sports, dports)
 
+
 class TCPChannel(PortChannel):
     """A TCPChannel represents a TCP port and/or connection state specification"""
     
     def __init__(self, **kwargs):
         super(TCPChannel, self).__init__(proto='tcp', **kwargs)
+
 
 class UDPChannel(PortChannel):
     """A UDPChannel represents a UDP port and/or connection state specification"""
@@ -79,17 +84,19 @@ class UDPChannel(PortChannel):
     def __init__(self, **kwargs):
         super(UDPChannel, self).__init__(proto='udp', **kwargs)
 
+
 class ICMPChannel(StatefulChannel):
     """A ICMPChannel represents a ICMP port and/or connection state specification"""
     
     def __init__(self, icmp_type='', args=None, **kwargs):
         if icmp_type:
-            super(ICMPChannel, self).__init__(proto='icmp', icmp_type=icmp_type, **kwargs)
+            super(ICMPChannel, self).__init__(proto='icmp', args=args, icmp_type=icmp_type, **kwargs)
         else:
-            super(ICMPChannel, self).__init__(proto='icmp', **kwargs)
+            super(ICMPChannel, self).__init__(proto='icmp', args=args, **kwargs)
     
     def __str__(self):
         icmp_type = self['icmp_type'].value if 'icmp_type' in self else 'any'
         return "%s, type %s" % (super(ICMPChannel, self).__str__(), icmp_type)
-    
+
+
 __all__ = [Channel, StatefulChannel, PortChannel, TCPChannel, UDPChannel, ICMPChannel]

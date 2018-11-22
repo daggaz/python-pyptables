@@ -6,6 +6,7 @@ from pyptables.rules.base import AbstractRule, CustomRule, Rule, CompositeRule
 
 from pyptables.chains import AbstractChain as _AbstractChain
 
+
 class Jump(Rule):
     """A iptables Rule object that jumps to the specified chain"""
      
@@ -21,6 +22,7 @@ class Jump(Rule):
             name = chain
         
         super(Jump, self).__init__(jump=name, comment=comment, *args, **kwargs)
+
 
 Accept = Rule(jump=Rule.ACCEPT)
 Drop = Rule(jump=Rule.DROP)

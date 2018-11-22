@@ -2,11 +2,12 @@
 
 from pyptables.rules.arguments import ArgumentList, UnboundArgument
 
+
 class Match(ArgumentList):
     """An iptables ArgumentList for a match extension"""
-    _known_args = [UnboundArgument('m', 'match')] 
+    _known_args = (UnboundArgument('m', 'match'),)
     
-    def __init__(self, name, known_args=[], args=(), **kwargs):
+    def __init__(self, name, known_args=(), args=(), **kwargs):
         """Creates a Match
         
         known_args - list of UnboundArguments known to this Match

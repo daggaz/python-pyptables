@@ -27,7 +27,7 @@ class AbstractRule(DebugObject):
         
     def _header(self):
         return '# Rule: %(comment)s(%(debug)s)' % {
-                    'comment': self.comment + ' '  if self.comment else '',
+                    'comment': self.comment + ' ' if self.comment else '',
                     'debug': self.debug_info(),
                     }
     
@@ -38,10 +38,11 @@ class AbstractRule(DebugObject):
         
     def rule_definitions(self):
         """Return a list of individual iptables commands that implement this rule"""
-        raise NotImplementedError() # pragma: no cover
+        raise NotImplementedError()  # pragma: no cover
     
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self.rule_definitions())
+
 
 class CustomRule(AbstractRule):
     """An iptables rule with its content specified as a plain string"""
@@ -54,9 +55,10 @@ class CustomRule(AbstractRule):
         if self.comment:
             return ['%s -m comment --comment "%s"' % (
                         self.rule,
-                        self.comment.replace('"','\\"'),
+                        self.comment.replace('"', '\\"'),
                         )]
         return [self.rule]
+
 
 class Rule(AbstractRule):
     """An iptables rule with rich pythonic interface for rule creation"""
@@ -73,7 +75,7 @@ class Rule(AbstractRule):
     TCP = 'tcp'
     UDP = 'udp'
     ICMP = 'icmp'
-    IGMP =  'igmp'
+    IGMP = 'igmp'
 
     # List of known arguments
     _known_args = (
@@ -87,7 +89,7 @@ class Rule(AbstractRule):
         UnboundArgument('g', 'goto'),
         )
     
-    def __init__(self, comment=None, args=[], **kwargs):
+    def __init__(self, comment=None, args=(), **kwargs):
         """Creates a Rule.
            
         comment - rule comment
@@ -95,7 +97,7 @@ class Rule(AbstractRule):
         args    - ArgumentList objects to add to this rule
         
         Some arguments are invertable by appending __not to the
-        argument name (see Known Arugments below).
+        argument name (see Known Arguments below).
        
         Usage:
         Rule(jump='DROP', i='eth0', destination__not='192.168.23.0/24')
@@ -106,7 +108,7 @@ class Rule(AbstractRule):
                                                      "\n".join(arg.help() for arg in _known_args),
                                                      )
     
-    def __call__(self, comment=None, args=[], **kwargs):
+    def __call__(self, comment=None, args=(), **kwargs):
         """Returns a new rule based on this rule with the args and kwargs specified added to it"""
         rule = Rule()
         rule.comment = comment or self.comment
@@ -120,8 +122,9 @@ class Rule(AbstractRule):
             arguments.append(Match('comment', comment=self.comment))
         return [" ".join([arg.to_iptables() for arg in arguments])]
 
+
 class CompositeRule(AbstractRule):
-    """An iptables rule combining multiple other iptables rules (AbstractRule derivitives)"""
+    """An iptables rule combining multiple other iptables rules (AbstractRule derivatives)"""
     def __init__(self, rules, comment=None):
         super(CompositeRule, self).__init__(comment)
         self._rules = rules

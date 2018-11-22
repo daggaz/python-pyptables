@@ -2,9 +2,10 @@
 
 from collections import namedtuple
 
+
 class UnboundArgument(object):
     """This class represents an argument that the system is
-    aware of, and can therefore provide additional apis for.
+    aware of, and can therefore provide additional APIs for.
     """
     
     ParseResult = namedtuple('ParseResult', 'name inverse')
@@ -58,7 +59,8 @@ class UnboundArgument(object):
                                         self.type.__name__,
                                         ', invertable' if self.invertable else '',
                                         )
-        
+
+
 class Argument(object):
     """Represents a iptables Rule argument/value pair (abstract)"""
     
@@ -83,11 +85,11 @@ class Argument(object):
     
     def get_name(self):
         """Returns the preferred name for this argument"""
-        raise NotImplemented('Subclasses must implement') # pragma: no cover 
+        raise NotImplemented('Subclasses must implement')  # pragma: no cover
     
     def has_name(self, name):
         """Returns True if this argument is known by the specified name"""
-        raise NotImplemented('Subclasses must implement') # pragma: no cover 
+        raise NotImplemented('Subclasses must implement')  # pragma: no cover
     
     def get_argument(self):
         """Renders the argument name with prefixed "-" or "--", as appropriate""" 
@@ -97,6 +99,7 @@ class Argument(object):
     
     def __repr__(self):
         return "<%s: %s=%s>" % (self.__class__.__name__, self.get_name(), self.value)
+
 
 class BoundArgument(Argument):
     """Represents an known argument (UnboundArgument) bound to value"""
@@ -132,6 +135,7 @@ class BoundArgument(Argument):
         if self.inverse:
             return "! %s %s" % (self.get_argument(), self.value)
         return "%s %s" % (self.get_argument(), self.value)
+
 
 class CustomArgument(Argument):
     """Represents an iptables argument that the system has no
@@ -177,10 +181,11 @@ class CustomArgument(Argument):
             return "! %s" % result
         return result
 
+
 class ArgumentList(object):
     """Represents a list of iptables Arguments
     
-    Can be interated:
+    Can be iterated:
     for arg in arglist:
         pass
     
@@ -191,7 +196,7 @@ class ArgumentList(object):
     if 'p' in arglist:
         pass
     """ 
-    def __init__(self, known_args=[], args=(), **kwargs):
+    def __init__(self, known_args=(), args=(), **kwargs):
         """Creates an ArgumentList
         
         known_args - list of UnboundArguments known to this ArgumentList
@@ -200,7 +205,7 @@ class ArgumentList(object):
         args       - other ArgumentList objects to add to this ArgumentList
         """
         super(ArgumentList, self).__init__()
-        self.known_args = known_args
+        self.known_args = list(known_args)
         self.args = args
         self.kwargs = kwargs
     
@@ -212,7 +217,7 @@ class ArgumentList(object):
         return ArgumentList(known_args=self.known_args, args=args, **kwargs)
     
     def _update_args(self, args, kwargs):
-        args, kwargs = list(args), dict(kwargs) # don't modify passed data
+        args, kwargs = list(args), dict(kwargs)  # don't modify passed data
         for arglist in args:
             arglist.known_args.extend(self.known_args)
         args.extend(self.args)
@@ -220,7 +225,7 @@ class ArgumentList(object):
         return args, kwargs
     
     def __iter__(self):
-        kwargs = dict(self.kwargs) # duplicate dictionary, as it is modified below
+        kwargs = dict(self.kwargs)  # duplicate dictionary, as it is modified below
         for argument in self.known_args:
             for key in kwargs:
                 if argument.matches(key):
