@@ -94,7 +94,7 @@ def add_line_numbers(string, start=1):
 
 def restore(tables):
     process = subprocess.Popen(
-        ["cat"],
+        ["iptables-restore"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,

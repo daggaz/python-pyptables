@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='PyPTables',
-    version='1.0.5',
+    version='1.0.6',
     author='Jamie Cockburn',
     author_email='jamie_cockburn@hotmail.co.uk',
     packages=setuptools.find_packages(),
