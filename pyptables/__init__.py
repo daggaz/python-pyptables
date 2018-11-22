@@ -94,11 +94,12 @@ def add_line_numbers(string, start=1):
 
 def restore(tables):
     process = subprocess.Popen(
-        ["iptables-restore"],
+        ["cat"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
     if hasattr(tables, 'to_iptables'):
         tables = tables.to_iptables()
+    tables = tables.encode('utf-8')
     return process.communicate(tables)
