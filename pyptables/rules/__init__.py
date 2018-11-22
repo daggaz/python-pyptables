@@ -2,7 +2,7 @@
    rules for iptables.
 """
 
-from base import AbstractRule, CustomRule, Rule, CompositeRule
+from pyptables.rules.base import AbstractRule, CustomRule, Rule, CompositeRule
 
 from pyptables.chains import AbstractChain as _AbstractChain
 

@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
-from base import DebugObject
+from pyptables.base import DebugObject
+
 
 class Tables(DebugObject, OrderedDict):
     """Dictionary like top-level container of iptables, holds a number of Table objects."""
@@ -19,7 +20,7 @@ class Tables(DebugObject, OrderedDict):
                 'header': header,
                 'tables': table_output,
                 }
-        except Exception, e: #pragma: no cover
+        except Exception as e:  # pragma: no cover
             e.iptables_path = getattr(e, 'iptables_path', [])
             e.iptables_path.insert(0, "Tables")
             e.message = "Iptables error at:\n    %s\n\nError message: %s" % ("\n".join(e.iptables_path).replace('\n', '\n    '), e.message)
@@ -64,7 +65,7 @@ class Table(DebugObject, OrderedDict):
                 'rules': "\n\n".join([result.rules for result in chain_results]),
                 'footer': 'COMMIT'
                 }
-        except Exception, e: #pragma: no cover
+        except Exception as e:  # pragma: no cover
             e.iptables_path = getattr(e, 'iptables_path', [])
             e.iptables_path.insert(0, self.name)
             raise
@@ -78,4 +79,4 @@ class Table(DebugObject, OrderedDict):
         return chain
     
     def __repr__(self):
-        return "<Table: %s - %s>" % (self.name, self.values())
+        return "<Table: %s - %s>" % (self.name, list(self.values()))

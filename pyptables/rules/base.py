@@ -1,9 +1,10 @@
 import itertools
 
-from ..base import DebugObject
+from pyptables.base import DebugObject
 
-from arguments import UnboundArgument, ArgumentList
-from matches import Match
+from pyptables.rules.arguments import UnboundArgument, ArgumentList
+from pyptables.rules.matches import Match
+
 
 class AbstractRule(DebugObject):
     """Represents an iptables rule"""
@@ -19,7 +20,7 @@ class AbstractRule(DebugObject):
                 'header': self._header(),
                 'rules': self._rule_definition(prefix),
                 }
-        except Exception, e: # pragma: no cover
+        except Exception as e:  # pragma: no cover
             e.iptables_path = getattr(e, 'iptables_path', [])
             e.iptables_path.insert(0, "Rule:\n    created: %s\n    comment: %s" % (self.debug_info(), self.comment))
             raise

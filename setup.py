@@ -16,6 +16,9 @@ setup(
     license='LICENSE.txt',
     description='Python package for generating Linux iptables configurations.',
     long_description=open('README.rst').read(),
+    requires=[
+        'six'
+    ],
     install_requires=[
         "nose",
         "coverage",

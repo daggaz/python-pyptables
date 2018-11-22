@@ -222,7 +222,7 @@ class ArgumentList(object):
     def __iter__(self):
         kwargs = dict(self.kwargs) # duplicate dictionary, as it is modified below
         for argument in self.known_args:
-            for key in kwargs.keys():
+            for key in kwargs:
                 if argument.matches(key):
                     value = kwargs.pop(key)
                     yield argument.bind(key, value)

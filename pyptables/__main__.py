@@ -22,4 +22,4 @@ else:
 if '--line-numbers' in sys.argv:
     output = add_line_numbers(output) 
     
-print output
+print(output)

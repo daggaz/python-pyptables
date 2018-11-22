@@ -3,7 +3,7 @@
 from functools import partial
 from random import Random
 
-from . import Rule
+from pyptables.rules import Rule
 
 _marks = []
 class Mark(Rule):

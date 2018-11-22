@@ -2,4 +2,4 @@
 rules for iptables.
 """
 
-from base import InputRule
+from pyptables.rules.input.base import InputRule

@@ -21,4 +21,4 @@ forward.policy = Rule.DROP
 # write the rules into the kernel
 restore(tables)
 
-print tables.to_iptables()
+print(tables.to_iptables())

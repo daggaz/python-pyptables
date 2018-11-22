@@ -1,7 +1,8 @@
 import re
 from collections import namedtuple
 
-from base import DebugObject
+from pyptables.base import DebugObject
+
 
 class AbstractChain(DebugObject, list):
     """Represents an iptables Chain.  Holds a number of Rule objects in a list-like fashion"""
@@ -27,7 +28,7 @@ class AbstractChain(DebugObject, list):
                                               'rules': rule_output,
                                               },
                                         )
-        except Exception, e: # pragma: no cover
+        except Exception as e:  # pragma: no cover
             e.iptables_path = getattr(e, 'iptables_path', [])
             e.iptables_path.insert(0, self.name)
             raise

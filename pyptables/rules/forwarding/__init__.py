@@ -2,4 +2,4 @@
 rules for iptables.
 """
 
-from base import ForwardingRule
+from pyptables.rules.forwarding.base import ForwardingRule

@@ -1,8 +1,11 @@
 import itertools
+
+import six
+from six.moves import zip_longest
 import os.path
 import unittest
 
-from StringIO import StringIO
+from io import StringIO
 
 from pyptables import default_tables, Rule, UserChain, Jump, CustomRule
 from pyptables.rules import CompositeRule
@@ -17,27 +20,31 @@ from pyptables.rules.forwarding.zones import Zone
 from pyptables.rules.forwarding.channels import TCPChannel, UDPChannel, ICMPChannel
 
 def compare(a, b):
-    for line_no, lines in enumerate(itertools.izip_longest(a, b, fillvalue='')):
+    for line_no, lines in enumerate(zip_longest(a, b, fillvalue='')):
         lines = [line.strip() for line in lines]
         if all(line.startswith('#') for line in lines):
             continue
-        for i, chars in enumerate(itertools.izip_longest(*lines)):
+        for i, chars in enumerate(zip_longest(*lines)):
             if chars[0] != chars[1]:
                 raise ValueError("line %s doesn't match:\n\t%s\n\t%s\n\t%s^" % (line_no, lines[0], lines[1], i*'_'))
     return True
         
 
 class MainTest(unittest.TestCase):
-    
     def test(self):
-        self.assertRaisesRegexp(ValueError, "Only 'not' is supported", lambda: Rule(s__invalid=None).to_iptables())
-        self.assertRaisesRegexp(ValueError, "This argument is not invertable", lambda: Rule(f__not=None).to_iptables())
-        self.assertRaisesRegexp(ValueError, "Only 'not' is supported", lambda: Rule(custom__invalid=None).to_iptables())
-        self.assertRaisesRegexp(ValueError, "badly formatted argument name", lambda: Rule(custom__not__invalid=None).to_iptables())
+        with six.assertRaisesRegex(self, ValueError, "Only 'not' is supported"):
+            Rule(s__invalid=None).to_iptables()
+        with six.assertRaisesRegex(self, ValueError, "This argument is not invertable"):
+            Rule(f__not=None).to_iptables()
+        with six.assertRaisesRegex(self, ValueError, "Only 'not' is supported"):
+            Rule(custom__invalid=None).to_iptables()
+        with six.assertRaisesRegex(self, ValueError, "badly formatted argument name"):
+            Rule(custom__not__invalid=None).to_iptables()
         Rule(custom__not=None).to_iptables()
         arg_list = ArgumentList(custom='1')
         self.assertIsInstance(arg_list['custom'], CustomArgument)
-        self.assertRaises(KeyError, lambda: arg_list['missing'])
+        with self.assertRaises(KeyError):
+            _ = arg_list['missing']
         arg_list = arg_list(another=None, args=(ArgumentList(custom='2'),))
         self.assertTrue('custom' in arg_list)
         self.assertFalse('missing' in arg_list)
@@ -51,12 +58,15 @@ class MainTest(unittest.TestCase):
         repr(Rule())
         Accept = Rule(j='ACCEPT')
         chain.append(Rule(i='eth0', s='1.1.2.1', d__not='1.1.1.2', jump='DROP', comment='A Rule'))
-        def tables_set(): tables['filter'] = None
-        self.assertRaises(TypeError, tables_set)
-        print tables
-        def table_set(): tables['filter']['INPUT'] = None
-        self.assertRaises(TypeError, table_set)
-        print tables['filter']
+
+        with self.assertRaises(TypeError):
+            tables['filter'] = None
+        print(tables)
+
+        with self.assertRaises(TypeError):
+            tables['filter']['INPUT'] = None
+        print(tables['filter'])
+
         tables['filter'].append(chain)
         tables['filter']['INPUT'].append(Jump(chain))
         tables['filter']['INPUT'].append(Jump('string_chain'))
@@ -125,15 +135,18 @@ class MainTest(unittest.TestCase):
                                                           log=True,
                                                           log_cls=Log,  
                                                           ))
-        self.assertRaises(ValueError, lambda: InputRule('BAD').to_iptables())
-        self.assertRaises(ValueError, lambda: ForwardingRule(policy='BAD', sources=[], destinations=[]).to_iptables())
-        self.assertRaisesRegexp(ValueError, "Argument must be of type.*", lambda: Rule(p=1).to_iptables())
+        with self.assertRaises(ValueError):
+            InputRule('BAD').to_iptables()
+        with self.assertRaises(ValueError):
+            ForwardingRule(policy='BAD', sources=[], destinations=[]).to_iptables()
+        with six.assertRaisesRegex(self, ValueError, "Argument must be of type.*"):
+            Rule(p=1).to_iptables()
         result = tables.to_iptables()
         fixture_file = os.path.join(os.path.dirname(__file__), 'test.dat')
         with open(fixture_file, 'w') as fixture:
             fixture.write(result)
         with open(fixture_file) as fixture:
             try:
-                compare(fixture, StringIO(result))
-            except ValueError, e:
+                compare(fixture, StringIO(six.u(result)))
+            except ValueError as e:  # pragma: nocover
                 self.fail(str(e))

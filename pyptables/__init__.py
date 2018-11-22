@@ -1,10 +1,11 @@
 import re 
 import subprocess
 
-from tables import Tables, Table
-from chains import BuiltinChain, UserChain
-from rules import Rule, Accept, Drop, Jump, Redirect, Return, Log, CustomRule
-from rules.matches import Match
+from pyptables.tables import Tables, Table
+from pyptables.chains import BuiltinChain, UserChain
+from pyptables.rules import Rule, Accept, Drop, Jump, Redirect, Return, Log, CustomRule
+from pyptables.rules.matches import Match
+
 
 def default_tables():
     """Generate a set of iptables containing all the default tables and chains"""

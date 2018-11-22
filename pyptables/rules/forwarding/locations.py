@@ -3,9 +3,10 @@
    Locations represent a network location.
 """
 
-from ...base import DebugObject
-from ..arguments import ArgumentList
-from hosts import Hosts
+from pyptables.base import DebugObject
+from pyptables.rules.arguments import ArgumentList
+from pyptables.rules.forwarding.hosts import Hosts
+
 
 class Location(DebugObject):
     """Represents a network location"""
