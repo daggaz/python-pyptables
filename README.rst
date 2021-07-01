@@ -115,6 +115,24 @@ For illustration of how the ``Tables``, ``Table`` and ``BuiltinChain`` classes a
 
 You can of course choose not to use the ``default_tables()`` function, and create the basic tables structure yourself.  This would be needed if for example you want to use ip6tables, or use non-standard tables.
 
+User chains
+-----------
+
+The ``UserChain`` class can be used to define user-defined chains.
+
+  ::
+
+    chain = UserChain('test_chain', comment='A user chain')
+    chain.append(Rule(i='eth0', s='1.1.2.1', d__not='1.1.1.2', jump='DROP', comment='A Rule'))
+
+User-defined chains can be referenced to from the built-in chain via a jump (and others similar constructs).
+
+  ::
+
+    tables = default_tables()
+    tables['filter'].append(chain)
+    tables['filter']['INPUT'].append(Jump(chain))
+
 Rules
 =====
 
@@ -184,6 +202,20 @@ Higher-Level Rules
 ==================
 
 TODO
+
+*****
+Build
+*****
+
+  ::
+
+    cd ~/sources/python-pyptables/
+    python3 -m venv ~/build/
+    . ~/build/bin/activate
+    pip install --upgrade build twine
+    python -m build
+    twine upload dist/*
+
 
 ***********
 Issues/Bugs
